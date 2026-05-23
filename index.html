@@ -33,7 +33,7 @@
   --secondary: #a38f7b;
 
   --text: #2b2b2b;
-  --muted: #6b6b6b;
+  --muted: #555;
 
   --border: #d8d1c8;
 
@@ -552,10 +552,126 @@ box-shadow: 0 10px 25px rgba(0,0,0,0.06);
         padding: 80px 7%;
       }
     }
+
+      /* ACTIVE NAVBAR */
+
+nav ul li a.active {
+  color: var(--primary);
+  font-weight: 600;
+  position: relative;
+}
+
+nav ul li a.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+/* SCROLL PROGRESS BAR */
+
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background: var(--primary);
+  z-index: 2000;
+}
+
+/* THEME TOGGLE */
+
+.theme-toggle {
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--text);
+  transition: 0.3s;
+}
+
+.theme-toggle:hover {
+  transform: rotate(15deg);
+}
+
+/* DARK MODE */
+
+body.dark-mode {
+  --bg: #1f1f1f;
+  --surface: #2a2a2a;
+  --card: #333333;
+
+  --primary: #b69d85;
+  --secondary: #d8b89c;
+
+  --text: #f5f5f5;
+  --muted: #d1d1d1;
+
+  --border: #444;
+}
+
+/* BUTTON FOCUS */
+
+.btn:focus {
+  outline: 3px solid rgba(122,106,88,0.25);
+}
+
+/* SMOOTH MICRO INTERACTIONS */
+
+.glass-card:hover,
+.project-card:hover,
+.skill-card:hover {
+  transform: translateY(-10px) scale(1.01);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+}
+
+/* IMAGE HOVER EFFECT */
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.4s;
+}
+
+.project-card:hover img {
+  transform: scale(1.05);
+}
+
+/* PROFILE IMAGE FIX */
+
+.profile-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* SECTION REVEAL */
+
+section {
+  animation: fadeIn 0.8s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
   </style>
 </head>
 <body>
-
+  <div id="progress-bar"></div>
   <!-- NAVBAR -->
 
   <nav>
@@ -563,11 +679,16 @@ box-shadow: 0 10px 25px rgba(0,0,0,0.06);
 
     <ul id="navLinks">
       <li><a href="#about">About</a></li>
+      <li><a href="#research">Research</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#education">Education</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+
+      <div class="theme-toggle" id="themeToggle">
+  <i class="fa-solid fa-moon"></i>
+</div>
 
     <div class="menu-toggle" id="menuToggle">
       <i class="fa-solid fa-bars"></i>
@@ -608,7 +729,7 @@ box-shadow: 0 10px 25px rgba(0,0,0,0.06);
 
   <section id="about">
     <h2 class="section-title">About Me</h2>
-    <p class="section-subtitle">I like to learn and experiment with new things also like buildig new solutions.</p>
+    <p class="section-subtitle">I like to learn and experiment with new things also like building new solutions.</p>
 
     <div class="about-container">
       <div class="glass-card" data-aos="fade-up">
@@ -915,9 +1036,7 @@ box-shadow: 0 10px 25px rgba(0,0,0,0.06);
             <span class="tag">Python</span>
             <span class="tag">XGBoost Classifier</span>
              <span class="tag">Handles imbalance, high accuracy on tabular data</span>
-              <span class="tag">Train-Test Split: Stratified (80/20)</span>
-               <span class="tag">Validation: 5-Fold Stratified Cross Validation</span>
-               <span class="tag">Target: 5-class multiclass classification</span>
+              
           </div>
 
           <div class="project-buttons">
@@ -951,7 +1070,7 @@ box-shadow: 0 10px 25px rgba(0,0,0,0.06);
           </div>
 
           <div class="project-buttons">
-  <a href="YOUR_MEDILENS_GITHUB_LINK"
+  <a href="https://github.com/hridoy9011/Medi-lens.git"
      class="btn btn-primary">
      GitHub
   </a>
@@ -1024,6 +1143,7 @@ box-shadow: 0 10px 25px rgba(0,0,0,0.06);
   <!-- CONTACT -->
 
   <section id="contact">
+  <div class="contact-container">
     <div class="glass-card" data-aos="fade-right">
          <h3 class="section-subtitle">Let's connect and collaborate.</h3>
         
@@ -1063,6 +1183,7 @@ box-shadow: 0 10px 25px rgba(0,0,0,0.06);
     Message sent successfully!
   </p>
 
+</div>
 </div>
   </section>
 
@@ -1134,6 +1255,62 @@ box-shadow: 0 10px 25px rgba(0,0,0,0.06);
     }
 
     typeEffect();
+
+    // ACTIVE NAVBAR
+
+const sections = document.querySelectorAll("section");
+const navItems = document.querySelectorAll("nav ul li a");
+
+window.addEventListener("scroll", () => {
+  let current = "";
+
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 150;
+
+    if (pageYOffset >= sectionTop) {
+      current = section.getAttribute("id");
+    }
+  });
+
+  navItems.forEach(link => {
+    link.classList.remove("active");
+
+    if (link.getAttribute("href").includes(current)) {
+      link.classList.add("active");
+    }
+  });
+});
+
+// SCROLL PROGRESS BAR
+
+window.addEventListener("scroll", () => {
+  const scrollTop = document.documentElement.scrollTop;
+
+  const scrollHeight =
+    document.documentElement.scrollHeight -
+    document.documentElement.clientHeight;
+
+  const progress = (scrollTop / scrollHeight) * 100;
+
+  document.getElementById("progress-bar").style.width =
+    progress + "%";
+});
+
+// THEME TOGGLE
+
+const themeToggle = document.getElementById("themeToggle");
+
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+
+  const icon = themeToggle.querySelector("i");
+
+  if (document.body.classList.contains("dark-mode")) {
+    icon.classList.replace("fa-moon", "fa-sun");
+  } else {
+    icon.classList.replace("fa-sun", "fa-moon");
+  }
+});
 
     // Contact Form
 
